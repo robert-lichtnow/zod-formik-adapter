@@ -1,0 +1,13 @@
+{
+  "name": "zod-formik-adapter",
+  "version": "2.0.1",
+  "description": "Useful adapter for using Zod with Formik - Supply Chain Security PoC",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/robert-lichtnow/zod-formik-adapter"
+  },
+  "keywords": ["zod", "formik", "adapter", "validation"],
+  "author": "Security Research PoC",
+  "license": "MIT"
+}
